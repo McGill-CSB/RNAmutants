@@ -16,10 +16,10 @@ all :	RNAmutants.c RNAmutants
 	$(CC) $(CFLAGS) -c $*.c
 
 %$(EXE) : %.o
-	$(CC) $(CFLAGS) $(LFLAGS) $? -o $@
+	$(CC) $(CFLAGS) $? -o $@ $(LFLAGS) 
 
 RNAmutants : $(OBJ)
-	$(CC) $(LFLAGS) $(CFLAGS) $(OBJ) -o $@
+	$(CC) $(CFLAGS) $(OBJ) -o $@ $(LFLAGS) 
 
 clean:	
 	rm -f *~ $(OBJ)
