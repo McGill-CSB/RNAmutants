@@ -1925,7 +1925,7 @@ void startSamplingKmutant(int k, int i, int j, char **ss_sample, double *Esample
 /************************************************************************************************************/
 
 
-int basicSamplingEngine(int nos, int stat_flag, int warning_flag, int compatible_neighbors) {
+int basicSamplingEngine(FILE *sample_file_flux, int nos, int stat_flag, int warning_flag, int compatible_neighbors) {
 	
 	int nbSample = 0, ii,jj;
 	char **ss_sample;
@@ -1980,7 +1980,7 @@ int basicSamplingEngine(int nos, int stat_flag, int warning_flag, int compatible
 	
 	/* sampling */
 	
-	printf("> sampling %d mutant(s) and secondary structure(s)\n",nos);
+	fprintf(sample_file_flux,"> sampling %d mutant(s) and secondary structure(s)\n",nos);
 	error_rate = (int)((double)(nos)/1000.0) + 1;
 	ii=0;
 	while (ii<nos) {
@@ -1997,12 +1997,12 @@ int basicSamplingEngine(int nos, int stat_flag, int warning_flag, int compatible
 					strncpy(buffer_ss1,ss_sample[1],(length_seq1)*sizeof(char));
 					buffer_seq1[length_seq1]='\0';
 					buffer_ss1[length_seq1]='\0';
-					printf("%s&%s\t(%.2f)\n",buffer_seq1,ss_sample[0]+length_seq1,Esample);
-					printf("%s&%s\n",buffer_ss1,ss_sample[1]+length_seq1);
+					fprintf(sample_file_flux,"%s&%s\t(%.2f)\n",buffer_seq1,ss_sample[0]+length_seq1,Esample);
+					fprintf(sample_file_flux,"%s&%s\n",buffer_ss1,ss_sample[1]+length_seq1);
 				}
 				else {
-					printf("%s\t(%.2f)\n",ss_sample[0],Esample);
-					printf("%s\n",ss_sample[1]);
+					fprintf(sample_file_flux,"%s\t(%.2f)\n",ss_sample[0],Esample);
+					fprintf(sample_file_flux,"%s\n",ss_sample[1]);
 				}
 			}
 			ii++; /* increment only if sample is valid */
@@ -2076,7 +2076,7 @@ int basicSamplingEngine(int nos, int stat_flag, int warning_flag, int compatible
 /*                                                                                                          */
 /************************************************************************************************************/
 
-int sampleFromFile(const char *commandfile, int stat_flag, int warning_flag, int *compatible_neighbors) {
+int sampleFromFile(FILE *sample_file_flux, const char *commandfile, int stat_flag, int warning_flag, int *compatible_neighbors) {
 	int nbSample = 0, nb_mut_in_sample, howManySample, ii, jj, line=1;
 	FILE *commands;
 	char **ss_sample,buffer[1000];
@@ -2175,7 +2175,7 @@ int sampleFromFile(const char *commandfile, int stat_flag, int warning_flag, int
 		
 		/* sample <howManySample> sequence and structures with <nb_mut_in_sample> mutations */
 		
-		printf("> sampling %d sequence and secondary structure(s) with %d mutations\n",howManySample,nb_mut_in_sample);
+		fprintf(sample_file_flux,"> sampling %d sequence and secondary structure(s) with %d mutations\n",howManySample,nb_mut_in_sample);
 		
 		error_rate = (int)((double)(howManySample)/1000.0) + 1;
 		ii=0;
@@ -2193,12 +2193,12 @@ int sampleFromFile(const char *commandfile, int stat_flag, int warning_flag, int
 						strncpy(buffer_ss1,ss_sample[1],(length_seq1)*sizeof(char));
 						buffer_seq1[length_seq1]='\0';
 						buffer_ss1[length_seq1]='\0';
-						printf("%s&%s\t(%.2f)\n",buffer_seq1,ss_sample[0]+length_seq1,Esample);
-						printf("%s&%s\n",buffer_ss1,ss_sample[1]+length_seq1);
+						fprintf(sample_file_flux,"%s&%s\t(%.2f)\n",buffer_seq1,ss_sample[0]+length_seq1,Esample);
+						fprintf(sample_file_flux,"%s&%s\n",buffer_ss1,ss_sample[1]+length_seq1);
 					}
 					else {
-						printf("%s\t(%.2f)\n",ss_sample[0],Esample);
-						printf("%s\n",ss_sample[1]);
+						fprintf(sample_file_flux,"%s\t(%.2f)\n",ss_sample[0],Esample);
+						fprintf(sample_file_flux,"%s\n",ss_sample[1]);
 					}
 				}
 				ii++; /* increment only if sample is valid */

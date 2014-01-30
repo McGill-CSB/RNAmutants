@@ -2152,6 +2152,7 @@ int main(int argc, char **argv) {
 	static int verbose_flag=0, mfold3_flag=1,input_string_flag=0,input_file_flag=0,sample_output_stats_flag=0,hybrid_flag=0,cst_flag=0;
 	char *input_param_directory=NULL, *library_path=strdup("lib");
 	char *partition_function_output_filename=NULL, *mfe_output_filename=NULL, *sample_output_filename=NULL;
+    FILE *mfe_file_flux=NULL, *pf_file_flux=NULL, *sample_file_flux=NULL;
 	int *compatible_neighbors,compatible_neighbors_flag=0;
 	
 	static struct option long_options[] =
@@ -2439,6 +2440,26 @@ int main(int argc, char **argv) {
 		
 	}
 	
+    /* open output file descriptors */
+    
+    if (mfe_output_filename) {
+        mfe_file_flux = fopen(mfe_output_filename,"w");
+    } else {
+        mfe_file_flux = stdout;
+    }
+    
+    if (partition_function_output_filename) {
+        pf_file_flux = fopen(partition_function_output_filename,"w");
+    } else {
+        pf_file_flux = stdout;
+    }
+    
+    if (sample_output_filename) {
+        sample_file_flux = fopen(sample_output_filename,"w");
+    } else {
+        sample_file_flux = stdout;
+    }
+    
 	/* init dynamic table and check it */
 	
 	if (verbose_flag) {
@@ -2469,7 +2490,7 @@ int main(int argc, char **argv) {
 		exit(EXIT_FAILURE);
 	}
 	
-	/* init input tape */
+	/* init mutation weights */
 	
 	if (mutation_matrix_filename) {
 		init_mutation_matrix_from_file(mutation_matrix_filename);
@@ -2529,7 +2550,7 @@ int main(int argc, char **argv) {
 	init_tetraloop_cmpt_table();
 	
 	if (verbose_flag) {
-		printf("> allocated memory in dynamic tables : %Ld bytes\n",total_memory);
+		printf("> allocated memory in dynamic tables : %lld bytes\n",total_memory);
 		printf("> time used for memory allocation : %ld secondes\n",time(0)-starting_time);
 		starting_time = time(0);
 	}
@@ -2633,29 +2654,31 @@ int main(int argc, char **argv) {
 		
 		/* print results */
 		
+        /* Partition function */
+        
 #ifdef DETAILED
 		for(kk=0;kk<max_mutations;kk++) {
-			printf("%d %.14e %.14e %.14e\n",kk,boltzmann_distribution_simple[kk]+boltzmann_distribution_multi[kk],
+			fprintf(pf_file_flux,"%d %.14e %.14e %.14e\n",kk,boltzmann_distribution_simple[kk]+boltzmann_distribution_multi[kk],
 				   boltzmann_distribution_simple[kk],boltzmann_distribution_multi[kk]);
 		}
 #else
 		for(kk=0;kk<max_mutations;kk++) {
-			printf("%d %.14e\n",kk,boltzmann_distribution_simple[kk]+boltzmann_distribution_multi[kk]);
+			fprintf(pf_file_flux,"%d %.14e\n",kk,boltzmann_distribution_simple[kk]+boltzmann_distribution_multi[kk]);
 		}
 #endif
 		
-		/* m.f.e. */
+		/* MFE */
 		
-		printf(">> Superoptimal structure(s):\n");
+		fprintf(mfe_file_flux,">> Superoptimal structure(s):\n");
 		for(kk=0;kk<max_mutations;kk++) {
 			if ((ss_constraint_is_non_empty())&&(boltzmann_distribution_simple[kk]+boltzmann_distribution_multi[kk]==0)) {
-				printf("> %d-superoptimal structure\n",kk);
-				printf("None: no secondary structure satisfy the constraints.\n");
+				fprintf(mfe_file_flux,"> %d-superoptimal structure\n",kk);
+				fprintf(mfe_file_flux,"None: no secondary structure satisfy the constraints.\n");
 			}
 			else {
 				compatible_neighbors_flag = 1;
 				compatible_neighbors[kk]=1;
-				startBacktrackKSuperOptimal(kk,mfe_v[kk]);
+				startBacktrackKSuperOptimal(mfe_file_flux,kk,mfe_v[kk]);
 			}
 		}
 		
@@ -2665,14 +2688,29 @@ int main(int argc, char **argv) {
 	
 	if (number_of_sample) {
 		printf(">> Sampling %d mutants:\n",number_of_sample);
-		basicSamplingEngine(number_of_sample,sample_output_stats_flag,warning_flag,compatible_neighbors_flag);
+		basicSamplingEngine(sample_file_flux,number_of_sample,sample_output_stats_flag,warning_flag,compatible_neighbors_flag);
 	}
 	
 	if (samplefile) {
 		printf(">> Sampling mutants from file %s:\n",samplefile);
-		sampleFromFile(samplefile,sample_output_stats_flag,warning_flag,compatible_neighbors);
+		sampleFromFile(sample_file_flux,samplefile,sample_output_stats_flag,warning_flag,compatible_neighbors);
 	}
 	
+    /** end of RNAmutants -- Cleaning now **/
+    
+    /* close output file descriptors */
+    
+    if (mfe_output_filename) {
+        fclose(mfe_file_flux);
+    }
+    
+    if (partition_function_output_filename) {
+        fclose(pf_file_flux);
+    }
+
+    if (sample_output_filename) {
+        fclose(sample_file_flux);
+    }
 
 #ifdef CLEAN_DYNAMIC_TABLE
 	

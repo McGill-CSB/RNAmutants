@@ -1502,7 +1502,7 @@ void backtrackExteriorLoop(int nb_mut_remaining,int ii,int jj, int lnt, int rnt,
 /* start sampling a sequence (i,j)                                                                  */
 /****************************************************************************************************/
 
-void startBacktrackKSuperOptimal(int k, double mfe) {
+void startBacktrackKSuperOptimal(FILE *mfe_file_flux,int k, double mfe) {
 	char **ss_sample;
 	int uu,vv,xx=-1,yy=-1,iLast=rna_len-1;
 	char *buffer_seq1=NULL,*buffer_ss1=NULL;
@@ -1550,15 +1550,15 @@ void startBacktrackKSuperOptimal(int k, double mfe) {
 				strncpy(buffer_ss1,ss_sample[1],(length_seq1)*sizeof(char));
 				buffer_seq1[length_seq1]='\0';
 				buffer_ss1[length_seq1]='\0';
-				printf("> %d-superoptimal structure\n",k);
-				printf("%s&%s\t(0.0)\n",buffer_seq1,ss_sample[0]+length_seq1);
-				printf("%s&%s\n",buffer_ss1,ss_sample[1]+length_seq1);
+				fprintf(mfe_file_flux,"> %d-superoptimal structure\n",k);
+				fprintf(mfe_file_flux,"%s&%s\t(0.0)\n",buffer_seq1,ss_sample[0]+length_seq1);
+				fprintf(mfe_file_flux,"%s&%s\n",buffer_ss1,ss_sample[1]+length_seq1);
 				return;
 			}
 			else {
-				printf("> %d-superoptimal structure\n",k);
-				printf("%s\t(0.0)\n",ss_sample[0]);
-				printf("%s\n",ss_sample[1]);
+				fprintf(mfe_file_flux,"> %d-superoptimal structure\n",k);
+				fprintf(mfe_file_flux,"%s\t(0.0)\n",ss_sample[0]);
+				fprintf(mfe_file_flux,"%s\n",ss_sample[1]);
 				return;
 			}
 		}
@@ -1573,12 +1573,12 @@ void startBacktrackKSuperOptimal(int k, double mfe) {
 		strncpy(buffer_ss1,ss_sample[1],(length_seq1)*sizeof(char));
 		buffer_seq1[length_seq1]='\0';
 		buffer_ss1[length_seq1]='\0';
-		printf("%s&%s\t(%.2f)\n",buffer_seq1,ss_sample[0]+length_seq1,mfe);
-		printf("%s&%s\n",buffer_ss1,ss_sample[1]+length_seq1);
+		fprintf(mfe_file_flux,"%s&%s\t(%.2f)\n",buffer_seq1,ss_sample[0]+length_seq1,mfe);
+		fprintf(mfe_file_flux,"%s&%s\n",buffer_ss1,ss_sample[1]+length_seq1);
 	}
 	else {
-		printf("%s\t(%.2f)\n",ss_sample[0],mfe);
-		printf("%s\n",ss_sample[1]);
+		fprintf(mfe_file_flux,"%s\t(%.2f)\n",ss_sample[0],mfe);
+		fprintf(mfe_file_flux,"%s\n",ss_sample[1]);
 	}
 	
 	/* free tables */

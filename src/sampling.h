@@ -6,5 +6,5 @@ double samplingMultiLoop(int nb_mut_remaining,int ii,int jj, int lnt, int rnt, i
 double samplingExteriorLoop(int nb_mut_remaining,int ii,int jj, int lnt, int rnt, char **ss_sample);
 int startBasicSampling(int i, int j, char **ss_sample, double *Esample);
 void startSamplingKmutant(int k, int i, int j, char **ss_sample, double *Esample);
-int basicSamplingEngine(int nos, int stat_flag, int warning_flag, int compatible_neighbors);
-int sampleFromFile(const char *commandfile, int stat_flag, int warning_flag, int *compatible_neighbors);
+int basicSamplingEngine(FILE *sample_file_flux,int nos, int stat_flag, int warning_flag, int compatible_neighbors);
+int sampleFromFile(FILE *sample_file_flux,const char *commandfile, int stat_flag, int warning_flag, int *compatible_neighbors);
