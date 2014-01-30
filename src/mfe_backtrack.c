@@ -1566,7 +1566,7 @@ void startBacktrackKSuperOptimal(FILE *mfe_file_flux,int k, double mfe) {
 	
 	/* backtrack */
 	
-	printf("> %d-superoptimal structure\n",k);
+	fprintf(mfe_file_flux,"> %d-superoptimal structure\n",k);
 	backtrackExteriorLoop(k,0,iLast,xx,yy,ss_sample,mfe);
 	if (cutpoint) {
 		strncpy(buffer_seq1,ss_sample[0],(length_seq1)*sizeof(char));

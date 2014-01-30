@@ -358,7 +358,7 @@ void precomputeHairpin_hybrid(int cutoff, int include_intermolecular_interaction
 
 void RNAmutants_algorithm_hybrid(int verbose) {
 	
-	int len, ii, jj, newii, newjj, rr, kk, xx, yy, nn, uu, vv, aa, bb, cc, dd, ee, ll, global_max_bp,newK,nb_free_nt,nt2mut;
+	int len, ii, jj, newii, newjj, rr, kk, xx, yy, nn, uu, vv, aa, bb, cc, dd, ee, ll, newK,nb_free_nt,nt2mut;
 	unsigned int *list_config, *list_config_close, *list_config_open;
 	int cloop,nb_mut_motif,nb_nt,nb_max_mut,ii_list,ii_list_open,ii_list_close,config,config_close,config_open;
 	int nb_max_mut_unk_loop,nb_mut_unk_loop,nb_max_mut_close_bp,nb_mut_close_bp,nb_max_mut_open_bp,nb_mut_open_bp;
@@ -442,8 +442,6 @@ void RNAmutants_algorithm_hybrid(int verbose) {
 		/* GENERAL CASE */
 		
 		for (len=4;len<=rna_len;len++) { /* the number of nucleic acids in the subsequence */
-			
-			global_max_bp = (len-__hairpin_min_length__)/2;
 			
 			for (ii=0;ii<=rna_len-len;ii++) { /* ii is the index of the first nucleic acid of the subsequence (indices start at 0) */
 				jj=ii+len-1;                    /* jj is the index of the last nucleic acid of the subsequence */

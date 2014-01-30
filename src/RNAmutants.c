@@ -792,11 +792,7 @@ unsigned int **build_generic_loop_list(int ileft, int iright, int nb_mutations) 
 unsigned int ****enum_all_stacks(int nb_mutations) {
 	int ii,jj;
 	unsigned int ****tab_motifs;
-	int leftmostseq2,rightmostseq1;
-	
-	rightmostseq1=(int)(cutpoint-0.5);
-	leftmostseq2=(int)(cutpoint+0.5);
-	
+    
 	tab_motifs=(unsigned int ****)xmalloc((rna_len+1)*sizeof(unsigned int ***));
 	for (ii=0;ii<=rna_len;ii++) {
 		tab_motifs[ii]=(unsigned int ***)xmalloc((rna_len+1)*sizeof(unsigned int **)); 
@@ -1406,7 +1402,7 @@ void precomputeHairpin() {
 
 void RNAmutants_algorithm(int verbose) {
 	
-	int len, ii, jj, newii, newjj, rr, kk, xx, yy, nn, uu, vv, aa, bb, cc, dd, ee, ll, global_max_bp,newK,nb_free_nt,nt2mut;
+	int len, ii, jj, newii, newjj, rr, kk, xx, yy, nn, uu, vv, aa, bb, cc, dd, ee, ll, newK,nb_free_nt,nt2mut;
 	unsigned int *list_config, *list_config_close, *list_config_open;
 	int cloop,nb_mut_motif,nb_nt,nb_max_mut,ii_list,ii_list_open,ii_list_close,config,config_close,config_open;
 	int nb_max_mut_unk_loop,nb_mut_unk_loop,nb_max_mut_close_bp,nb_mut_close_bp,nb_max_mut_open_bp,nb_mut_open_bp;
@@ -1488,8 +1484,6 @@ void RNAmutants_algorithm(int verbose) {
 		
 		for (len=__hairpin_min_length__+4;len<=rna_len;len++) { /* len is the number of nucleic acids in the subsequence */
 			/* minimum length is the minimal size for stack since hairpins have already been computed. */
-			
-			global_max_bp = (len-__hairpin_min_length__)/2;
 			
 			for (ii=0;ii<=rna_len-len;ii++) { /* ii is the index of the first nucleic acid of the subsequence (indices start at 0) */
 				jj=ii+len-1;                  /* jj is the index of the last nucleic acid of the subsequence */
@@ -2687,12 +2681,12 @@ int main(int argc, char **argv) {
 	/* Sampling */
 	
 	if (number_of_sample) {
-		printf(">> Sampling %d mutants:\n",number_of_sample);
+		fprintf(sample_file_flux,">> Sampling %d mutants:\n",number_of_sample);
 		basicSamplingEngine(sample_file_flux,number_of_sample,sample_output_stats_flag,warning_flag,compatible_neighbors_flag);
 	}
 	
 	if (samplefile) {
-		printf(">> Sampling mutants from file %s:\n",samplefile);
+		fprintf(sample_file_flux,">> Sampling mutants from file %s:\n",samplefile);
 		sampleFromFile(sample_file_flux,samplefile,sample_output_stats_flag,warning_flag,compatible_neighbors);
 	}
 	
